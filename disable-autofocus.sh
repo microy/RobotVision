@@ -4,11 +4,11 @@
 # Configure the stereo USB cameras
 #
 
+# Camera device
+CAMERA = video0
+
 # Disable autofocus
-uvcdynctrl -v -d video0 --set='Focus, Auto' 0
-uvcdynctrl -v -d video1 --set='Focus, Auto' 0
+uvcdynctrl -v -d $CAMERA --set='Focus, Auto' 0
 
 # Fix the focus
-uvcdynctrl -v -d video0 --set='Focus (absolute)' 30
-uvcdynctrl -v -d video1 --set='Focus (absolute)' 30
-
+uvcdynctrl -v -d $CAMERA --set='Focus (absolute)' 30
