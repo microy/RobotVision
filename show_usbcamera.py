@@ -8,20 +8,17 @@
 # External dependencies
 import cv2
 
-# The camera
+# Get the camera
 camera = cv2.VideoCapture( 1 )
-
 # Acquisition loop
 while( True ) :
-
-    # Capture frame-by-frame
+    # Capture image-by-image
     _, image = camera.read()
-
-    # Display the resulting frame
+    # Display the resulting image
     cv2.imshow( 'USB Camera', image )
-    if cv2.waitKey( 1 ) & 0xFF == 27 :
-        break
-
-# When everything done, release the capture
+    # Keyboard interruption with Escape
+    if cv2.waitKey( 1 ) & 0xFF == 27 : break
+# Release the camera
 camera.release()
+# Close OpenCV windows
 cv2.destroyAllWindows()
