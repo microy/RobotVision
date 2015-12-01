@@ -16,15 +16,10 @@ pattern_size = ( 9, 6 )
 # Chessboard pattern
 pattern_points = np.zeros( ( np.prod( pattern_size ), 3 ), np.float32 )
 pattern_points[ :, :2 ] = np.indices( pattern_size ).T.reshape( -1, 2 )
-# Get image size
-height, width = cv2.imread( image_files[0] ).shape[:2]
-img_size = ( width, height )
 # 3D points
-obj_points = []
+object_points = []
 # 2D points
-img_points = []
-# Images with chessboard found
-img_files = []
+image_points = []
 # Get the chessboard image files
 image_files = glob.glob( 'image-*.png' )
 # Find the chessboard on each image
@@ -43,14 +38,15 @@ for filename in image_files :
 	if not found :
 		print( 'Chessboard not found on image {}...'.format( filename ) )
 		continue
-	# Termination criteria
+	# Termination criteria for the corner detection
 	criteria = ( cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 30, 1e-5 )
 	# Refine the corner positions
 	cv2.cornerSubPix( image, corners, ( 11, 11 ), ( -1, -1 ), criteria )
 	# Store image and corner informations
-	img_points.append( corners.reshape( -1, 2 ) )
-	obj_points.append( pattern_points )
-	img_files.append( filename )
+	image_points.append( corners.reshape( -1, 2 ) )
+	object_points.append( pattern_points )
+# Get image size
+image_size = cv2.imread( image_files[ 0 ] ).shape[ :2 ][ ::-1 ]
 # Camera calibration flags
 flags  = 0
 #flags |= cv2.CALIB_USE_INTRINSIC_GUESS
@@ -62,7 +58,7 @@ flags |= cv2.CALIB_RATIONAL_MODEL
 flags |= cv2.CALIB_FIX_K4
 flags |= cv2.CALIB_FIX_K5
 # Camera calibration
-calibration = cv2.calibrateCamera( obj_points, img_points, img_size, flags = flags )
+calibration = cv2.calibrateCamera( object_points, image_points, image_size, flags = flags )
 # Store the calibration results in a dictionary
 parameter_names = ( 'calib_error', 'camera_matrix', 'dist_coefs', 'rvecs', 'tvecs' )
 calibration = dict( zip( parameter_names, calibration ) )
