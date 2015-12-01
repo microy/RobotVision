@@ -47,8 +47,6 @@ def PreviewChessboard( image, pattern_size ) :
 	found, corners = cv2.findChessboardCorners( image, pattern_size, flags = cv2.CALIB_CB_FAST_CHECK )
 	# Draw the chessboard corners on the image
 	if found : cv2.drawChessboardCorners( image, pattern_size, corners, found )
-	# Return the image with the chessboard if found
-	return image
 
 # Camera calibration
 def CalibrateCamera( image_files, pattern_size ) :
@@ -78,6 +76,8 @@ def CalibrateCamera( image_files, pattern_size ) :
 		if not found :
 			print( 'Chessboard not found on image {}...'.format( filename ) )
 			continue
+		# Convert the image in grayscale
+		image = cv2.cvtColor( image, cv2.COLOR_BGR2GRAY )
 		# Termination criteria
 		criteria = ( cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 30, 1e-5 )
 		# Refine the corner positions
