@@ -8,11 +8,11 @@
 # External dependencies
 import glob
 import pickle
+import numpy as np
+import cv2
 
 # Calibration pattern size
 pattern_size = ( 9, 6 )
-# Get the chessboard image files
-images_files = glob.glob( 'image-*.png' )
 # Chessboard pattern
 pattern_points = np.zeros( ( np.prod( pattern_size ), 3 ), np.float32 )
 pattern_points[ :, :2 ] = np.indices( pattern_size ).T.reshape( -1, 2 )
@@ -25,10 +25,14 @@ obj_points = []
 img_points = []
 # Images with chessboard found
 img_files = []
-# For each image
+# Get the chessboard image files
+image_files = glob.glob( 'image-*.png' )
+# Find the chessboard on each image
 for filename in image_files :
 	# Load the image
 	image = cv2.imread( filename )
+	# Convert the image in grayscale
+	image = cv2.cvtColor( image, cv2.COLOR_BGR2GRAY )
 	# Chessboard detection flags
 	flags  = 0
 	flags |= cv2.CALIB_CB_ADAPTIVE_THRESH
@@ -39,14 +43,12 @@ for filename in image_files :
 	if not found :
 		print( 'Chessboard not found on image {}...'.format( filename ) )
 		continue
-	# Convert the image in grayscale
-	image = cv2.cvtColor( image, cv2.COLOR_BGR2GRAY )
 	# Termination criteria
 	criteria = ( cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS, 30, 1e-5 )
 	# Refine the corner positions
-	cv2.cornerSubPix( image, corners, (11, 11), (-1, -1), criteria )
+	cv2.cornerSubPix( image, corners, ( 11, 11 ), ( -1, -1 ), criteria )
 	# Store image and corner informations
-	img_points.append( corners.reshape(-1, 2) )
+	img_points.append( corners.reshape( -1, 2 ) )
 	obj_points.append( pattern_points )
 	img_files.append( filename )
 # Camera calibration flags
@@ -56,7 +58,7 @@ flags  = 0
 #flags |= cv2.CALIB_FIX_ASPECT_RATIO
 #flags |= cv2.CALIB_ZERO_TANGENT_DIST
 flags |= cv2.CALIB_RATIONAL_MODEL
-#	flags |= cv2.CALIB_FIX_K3
+#flags |= cv2.CALIB_FIX_K3
 flags |= cv2.CALIB_FIX_K4
 flags |= cv2.CALIB_FIX_K5
 # Camera calibration
@@ -67,7 +69,7 @@ calibration = dict( zip( parameter_names, calibration ) )
 # Write the calibration object with all the parameters
 with open( 'calibration.pkl', 'wb' ) as calibration_file :
 	pickle.dump( calibration, calibration_file, pickle.HIGHEST_PROTOCOL )
+# Print the result
 print( 'Calibration error : {}'.format( calibration['calib_error'] ) )
-print( 'Reprojection error : {}'.format( calibration['reproject_error'] ) )
 print( 'Camera matrix :\n{}'.format( calibration['camera_matrix'] ) )
 print( 'Distortion coefficients :\n{}'.format( calibration['dist_coefs'].ravel() ) )
