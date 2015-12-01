@@ -9,7 +9,6 @@
 import time
 import cv2
 import numpy as np
-import Calibration
 
 # Calibration pattern size
 pattern_size = ( 9, 6 )
@@ -21,8 +20,12 @@ while( True ) :
     _, image = camera.read()
     # Copy the image for display
     chessboard = np.copy( image )
-    # Display the chessboard on the image
-    Calibration.PreviewChessboard( chessboard, pattern_size )
+    # Convert it to gray
+	gray = cv2.cvtColor( image, cv2.COLOR_BGR2GRAY )
+	# Find the chessboard corners on the image
+	found, corners = cv2.findChessboardCorners( gray, pattern_size, flags = cv2.CALIB_CB_FAST_CHECK )
+	# Draw the chessboard corners on the image
+	if found : cv2.drawChessboardCorners( chessboard, pattern_size, corners, found )
     # Display the resulting image
     cv2.imshow( 'USB Camera', chessboard )
     # Keyboard interruption
