@@ -8,18 +8,21 @@
 # External dependencies
 import time
 import cv2
+import numpy as np
 import Calibration
 
 # Calibration pattern size
 pattern_size = ( 9, 6 )
 # Get the camera
-camera = cv2.VideoCapture( 1 )
+camera = cv2.VideoCapture( 0 )
 # Acquisition loop
 while( True ) :
     # Capture image-by-image
     _, image = camera.read()
+    # Copy the image for display
+    chessboard = np.copy( image )
     # Display the chessboard on the image
-    chessboard = Calibration.PreviewChessboard( image, pattern_size )
+    Calibration.PreviewChessboard( chessboard, pattern_size )
     # Display the resulting image
     cv2.imshow( 'USB Camera', chessboard )
     # Keyboard interruption
