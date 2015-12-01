@@ -9,7 +9,7 @@
 import cv2
 
 # Get the camera
-camera = cv2.VideoCapture( 1 )
+camera = cv2.VideoCapture( 0 )
 # Acquisition loop
 while( True ) :
     # Capture image-by-image
