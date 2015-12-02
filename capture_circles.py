@@ -11,6 +11,9 @@ import numpy as np
 
 # Get the camera
 camera = cv2.VideoCapture( 0 )
+# Change the camera resolution
+#camera.set( cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920 )
+#camera.set( cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1200 )
 # Acquisition loop
 while( True ) :
     # Capture image-by-image
@@ -20,14 +23,14 @@ while( True ) :
     # Smooth it, otherwise a lot of false circles may be detected
     gray = cv2.GaussianBlur( gray, ( 9, 9 ), 2, 2 )
     # Detect the circles
-    circles = cv2.HoughCircles( gray, cv2.cv.CV_HOUGH_GRADIENT, 1.5, 20 )
+    circles = cv2.HoughCircles( gray, cv2.cv.CV_HOUGH_GRADIENT, 2, 200, None, 100, 30, 10, 40 )
     # Display the circles if found
     if circles is not None :
         # Convert the (x, y) coordinates and radius of the circles to integers
         circles = np.round( circles[ 0, : ] ).astype( int )
         for ( x, y, r ) in circles :
-            cv2.circle( image, ( x, y ), 3, ( 0, 255, 0 ), -1, 8, 0 )
-            cv2.circle( image, ( x, y ), r, ( 0, 0, 255 ), 3, 8, 0 )
+            cv2.circle( image, ( x, y ), 3, ( 0, 255, 0 ), -1 )
+            cv2.circle( image, ( x, y ), r, ( 0, 0, 255 ), 2 )
     # Display the resulting image
     cv2.imshow( 'USB Camera', image )
     # Keyboard interruption
