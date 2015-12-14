@@ -42,6 +42,8 @@ while( True ) :
             videowriter.open( 'video-{}.avi'.format( current_time ), cv2.cv.CV_FOURCC( *'XVID' ), 30, ( 640, 480 ) )
         # Release the video writer object
         else : videowriter.release()
+# Release the video writer
+if videowriter_enabled : videowriter.release()
 # Release the camera
 camera.release()
 # Close OpenCV windows
