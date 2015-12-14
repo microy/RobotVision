@@ -34,7 +34,7 @@ while( True ) :
     elif key == 32 :
         current_time = time.strftime( '%Y%m%d_%H%M%S' )
         print( 'Save image {} to disk...'.format( current_time ) )
-        cv2.imwrite( 'image-{}.png'.format( current_time ), image )
+        cv2.imwrite( 'calibration-{}.png'.format( current_time ), image )
 # Release the camera
 camera.release()
 # Close OpenCV windows

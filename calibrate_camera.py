@@ -21,7 +21,7 @@ object_points = []
 # 2D points
 image_points = []
 # Get the chessboard image files
-image_files = glob.glob( 'image-*.png' )
+image_files = glob.glob( 'calibration-*.png' )
 # Find the chessboard on each image
 for filename in image_files :
 	# Load the image
