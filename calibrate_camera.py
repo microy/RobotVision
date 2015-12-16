@@ -66,6 +66,12 @@ calibration = cv2.calibrateCamera( object_points, image_points, image_size, flag
 # Store the calibration results in a dictionary
 parameter_names = ( 'calib_error', 'camera_matrix', 'dist_coefs', 'rvecs', 'tvecs' )
 calibration = dict( zip( parameter_names, calibration ) )
+# Compute optimal camera matrix
+calibration['new_camera_matrix'], calibration['roi'] = cv2.getOptimalNewCameraMatrix( calibration['camera_matrix'], calibration['dist_coefs'],
+    image_size, 1, image_size )
+# Compute undistortion maps
+calibration['undistort_map'] = cv2.initUndistortRectifyMap( calibration['camera_matrix'], calibration['dist_coefs'],
+    None, calibration['new_camera_matrix'], image_size, cv2.CV_32FC1 )
 # Write the calibration object with all the parameters
 with open( 'calibration.pkl', 'wb' ) as calibration_file :
 	pickle.dump( calibration, calibration_file, pickle.HIGHEST_PROTOCOL )
@@ -73,3 +79,5 @@ with open( 'calibration.pkl', 'wb' ) as calibration_file :
 print( 'Calibration error : {}'.format( calibration['calib_error'] ) )
 print( 'Camera matrix :\n{}'.format( calibration['camera_matrix'] ) )
 print( 'Distortion coefficients :\n{}'.format( calibration['dist_coefs'].ravel() ) )
+print( 'New camera matrix :\n{}'.format( calibration['new_camera_matrix'] ) )
+print( 'ROI :\n{}'.format( calibration['roi'] ) )
